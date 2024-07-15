@@ -1,6 +1,7 @@
 import hmac
 import hashlib
 import base64
+import importlib.metadata
 import json
 
 import jwt
@@ -8,7 +9,6 @@ import requests
 import uuid
 import datetime
 
-import pkg_resources
 from pkg_resources import DistributionNotFound
 
 from .constants import URL, HTTP_STATUS_CODE
@@ -53,7 +53,7 @@ class Client:
     def get_version():
         version = ""
         try:
-            version = pkg_resources.require("paypayopa")[0].version
+            version = importlib.metadata.version("paypayopa")
         except DistributionNotFound:
             print('DistributionNotFound')
         return version
