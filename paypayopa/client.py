@@ -49,7 +49,8 @@ class Client:
         self.User = resources.User(self)
         self.Cashback = resources.Cashback(self)
 
-    def get_version(self):
+    @staticmethod
+    def get_version():
         version = ""
         try:
             version = pkg_resources.require("paypayopa")[0].version
@@ -74,7 +75,8 @@ class Client:
         if (merchant):
             self.assume_merchant = merchant
 
-    def encode_jwt(self, secret=str, scope="direct_debit",
+    @staticmethod
+    def encode_jwt(secret: str, scope="direct_debit",
                    redirect_url=None,
                    reference_id=str(uuid.uuid4())[:8],
                    device_id="", phone_number=""):
@@ -93,14 +95,16 @@ class Client:
                              algorithm='HS256')
         return encoded
 
-    def decode_jwt(self, secret, token):
+    @staticmethod
+    def decode_jwt(secret, token):
         try:
             ca = jwt.decode(token, base64.b64decode(secret), algorithm='HS256')
             return ca.get('userAuthorizationId'), ca.get('referenceId')
         except Exception as e:
             print("JWT Signature verification failed: ", e)
 
-    def auth_header(self, api_key, api_secret,
+    @staticmethod
+    def auth_header(api_key, api_secret,
                     method, resource, content_type="empty",
                     request_body=None):
         auth_type = 'hmac OPA-Auth'
