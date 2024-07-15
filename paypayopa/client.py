@@ -96,9 +96,9 @@ class Client:
         return encoded
 
     @staticmethod
-    def decode_jwt(secret, token):
+    def decode_jwt(client_id, secret, token):
         try:
-            ca = jwt.decode(token, base64.b64decode(secret), algorithm='HS256')
+            ca = jwt.decode(token, base64.b64decode(secret), algorithms='HS256', audience=client_id)
             return ca.get('userAuthorizationId'), ca.get('referenceId')
         except Exception as e:
             print("JWT Signature verification failed: ", e)

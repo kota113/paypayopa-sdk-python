@@ -303,7 +303,7 @@ Once the user has granted authorization, we will return the UserAuthorizationID 
 
 ```py
 # Retrieving userAuthorizationId from response JWT
-client.decode_jwt(API_SECRET, token)
+client.decode_jwt(CLIENT_ID, API_SECRET, token)
 ```
 
 ### Unlink a user from the client
@@ -493,7 +493,7 @@ Once the user has granted authorization, we will return the UserAuthorizationID 
 
 ```py
 # Retrieving userAuthorizationId from response JWT
-client.decode_jwt(API_SECRET, token)
+client.decode_jwt(CLIENT_ID, API_SECRET, token)
 ```
 
 Did you get **SUCCESS** in the print statement above, if yes then the API execution has happen correctly.
