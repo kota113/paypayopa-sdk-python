@@ -11,22 +11,9 @@ import datetime
 import pkg_resources
 from pkg_resources import DistributionNotFound
 
-from types import ModuleType
 from .constants import URL, HTTP_STATUS_CODE
 
 from . import resources
-
-
-def capitalize_camel_case(string):
-    return "".join(map(str.capitalize, string.split('_')))
-
-
-# Create a dict of resource classes
-RESOURCE_CLASSES = {}
-for name, module in resources.__dict__.items():
-    if isinstance(module, ModuleType) and \
-            capitalize_camel_case(name) in module.__dict__:
-        RESOURCE_CLASSES[capitalize_camel_case(name)] = module.__dict__[capitalize_camel_case(name)]
 
 
 class Client:
@@ -53,10 +40,14 @@ class Client:
         self.assume_merchant = ""
 
         self.base_url = self._set_base_url(**options)
-        # intializes each resource
-        # injecting this client object into the constructor
-        for name, Klass in RESOURCE_CLASSES.items():
-            setattr(self, name, Klass(self))
+        # initializes each resource
+        self.Code = resources.Code(self)
+        self.Payment = resources.Payment(self)
+        self.Account = resources.Account(self)
+        self.Preauth = resources.Preauth(self)
+        self.Pending = resources.Pending(self)
+        self.User = resources.User(self)
+        self.Cashback = resources.Cashback(self)
 
     def get_version(self):
         version = ""
