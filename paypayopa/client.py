@@ -58,8 +58,8 @@ class Client:
             print('DistributionNotFound')
         return version
 
-
     def _set_base_url(self, **options):
+        base_url = ""
         if self.production_mode is False:
             base_url = self.DEFAULTS['sandbox_base_url']
         if self.production_mode is True:
@@ -72,7 +72,7 @@ class Client:
         return base_url
 
     def set_assume_merchant(self, merchant):
-        if (merchant):
+        if merchant:
             self.assume_merchant = merchant
 
     @staticmethod
@@ -153,10 +153,10 @@ class Client:
         else:
             json_response = response.json()
             resolve_url = "{}?api_name={}&code={}&code_id={}".format(
-                        URL.RESOLVE,
-                        api_name,
-                        json_response['resultInfo']['code'],
-                        json_response['resultInfo']['codeId'])
+                URL.RESOLVE,
+                api_name,
+                json_response['resultInfo']['code'],
+                json_response['resultInfo']['codeId'])
             print("This link should help you to troubleshoot the error: " + resolve_url)
             return json_response
 
