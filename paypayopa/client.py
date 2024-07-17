@@ -11,7 +11,7 @@ import datetime
 
 from pkg_resources import DistributionNotFound
 
-from .constants import URL, HTTP_STATUS_CODE
+from .constants import URL, HttpStatusCode
 
 from . import resources
 
@@ -147,9 +147,15 @@ class Client:
             'Content-Type': 'application/json;charset=UTF-8',
             'X-ASSUME-MERCHANT': self.assume_merchant
         }, **options)
-        if ((response.status_code >= HTTP_STATUS_CODE.OK) and
-                (response.status_code < HTTP_STATUS_CODE.REDIRECT)):
+        if ((response.status_code >= HttpStatusCode.OK) and
+                (response.status_code < HttpStatusCode.REDIRECT)):
             return response.json()
+        elif response.status_code == HttpStatusCode.UNAUTHORIZED:
+            raise ValueError("401 Unauthorized request. Body: " + response.text)
+        elif response.status_code == HttpStatusCode.NOT_FOUND:
+            return None
+        elif response.status_code == HttpStatusCode.SERVER_ERROR:
+            raise ValueError("500 Server error. Body: " + response.text)
         else:
             json_response = response.json()
             resolve_url = "{}?api_name={}&code={}&code_id={}".format(
