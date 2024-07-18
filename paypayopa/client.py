@@ -143,6 +143,7 @@ class Client:
         del options['api_id']
         url = "{}{}".format(self.base_url, path)
         if 'params' in options:
+            print(options['params'])
             params = options['params']
             if params:
                 url = "{}?{}".format(url, "&".join(["{}={}".format(k, v) for k, v in params.items()]))
