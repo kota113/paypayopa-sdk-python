@@ -9,8 +9,9 @@ class Payment(Resource):
         super(Payment, self).__init__(client)
         self.base_url = URL.PAYMENT
 
-    def create(self, data={}, **kwargs):
-        url = self.base_url
+    def create(self, data: dict, allow_similar_transaction=False, **kwargs):
+        url = f"{self.base_url}?allowSimilarTransaction=true"\
+            if allow_similar_transaction else self.base_url
         if "requestedAt" not in data:
             data['requestedAt'] = int(datetime.datetime.now().timestamp())
         if "merchantPaymentId" not in data:
