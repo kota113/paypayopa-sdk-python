@@ -2,6 +2,7 @@ from setuptools import setup
 
 from os import path
 
+
 def fetch_long_description():
     """Loads the `long_description` from README.md."""
     this_directory = path.abspath(path.dirname(__file__))
@@ -10,6 +11,7 @@ def fetch_long_description():
             return readme_file.read()
     except FileNotFoundError:
         return 'See https://github.com/paypay/paypayopa-sdk-python'
+
 
 setup(
     name="paypayopa",
@@ -24,7 +26,10 @@ setup(
         'Documentation': 'https://github.com/paypay/paypayopa-sdk-python/README.md',
         'Source': 'https://github.com/paypay/paypayopa-sdk-python',
     },
-    install_requires=["requests", "pyjwt"],
+    install_requires=[
+        "requests >= 2.32.3",
+        "pyjwt >= 2.8.0",
+        "dataclasses-json >= 0.6.7"],
     extras_require={
         'test': ['responses'],
     },
