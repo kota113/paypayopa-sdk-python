@@ -2,33 +2,13 @@ from dataclasses import dataclass, field
 from typing import List, Dict, Any, Optional
 from dataclasses_json import dataclass_json, config
 
-
-@dataclass
-class BaseAPIResponse:
-    result_info: dict
-    data: Any
-
-
-@dataclass_json
-@dataclass
-class BaseObj:
-    status: str
-    accepted_at: int = field(metadata=config(field_name="acceptedAt"))
-    requested_at: int = field(metadata=config(field_name="requestedAt"))
-
-
-@dataclass_json
-@dataclass
-class Amount:
-    amount: int
-    currency: str
+from paypayopa.objects.base import BaseObj, BaseAPIResponse, Amount
 
 
 @dataclass_json
 @dataclass
 class Refund(BaseObj):
     merchant_refund_id: str = field(metadata=config(field_name="merchantRefundId"))
-    payment_id: str = field(metadata=config(field_name="paymentId"))
     amount: Amount
     reason: str
 
@@ -64,7 +44,6 @@ def deserialize_refunds(refunds_data: Dict[str, Any]) -> List[Refund]:
 @dataclass_json
 @dataclass
 class PaymentBody(BaseObj):
-    payment_id: str = field(metadata=config(field_name="paymentId"))
     merchant_payment_id: str = field(metadata=config(field_name="merchantPaymentId"))
     user_authorization_id: str = field(metadata=config(field_name="userAuthorizationId"))
     amount: Amount
@@ -80,4 +59,4 @@ class PaymentBody(BaseObj):
 
 @dataclass
 class PaymentAPIResponse(BaseAPIResponse):
-    data: PaymentBody
+    data: PaymentBody | None

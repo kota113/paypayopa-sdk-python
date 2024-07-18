@@ -3,6 +3,8 @@ from ..constants.url import URL
 from ..constants.api_list import API_NAMES
 import datetime
 
+from ..objects.refund import RefundBody, RefundAPIResponse
+
 
 class Pending(Resource):
     def __init__(self, client=None):
@@ -44,7 +46,7 @@ class Pending(Resource):
                              " \x1b[0m for merchantPaymentId")
         return self.delete(None, url, None, api_id=API_NAMES.CANCEL_REQUEST_ORDER, **kwargs)
 
-    def refund_payment(self, data={}, **kwargs):
+    def refund_payment(self, data: dict, **kwargs) -> RefundAPIResponse:
         url = "{}".format(URL.REFUNDS)
         if "merchantRefundId" not in data:
             raise ValueError("\x1b[31m MISSING REQUEST PARAMS "
@@ -57,17 +59,21 @@ class Pending(Resource):
         if "amount" not in data["amount"]:
             raise ValueError("\x1b[31m MISSING REQUEST PARAMS "
                              "\x1b[0m for amount")
-        if type(data["amount"]["amount"]) != int:
+        if not isinstance(data["amount"]["amount"], int):
             raise ValueError("\x1b[31m Amount should be of type integer"
                              " \x1b[0m")
         if "currency" not in data["amount"]:
             raise ValueError("\x1b[31m MISSING REQUEST PARAMS"
                              " \x1b[0m for currency")
-        return self.post_url(url, data,  api_id=API_NAMES.REFUND_REQUEST_ORDER, **kwargs)
+        raw_response = self.post_url(url, data,  api_id=API_NAMES.REFUND_REQUEST_ORDER, **kwargs)
+        refund: RefundBody = RefundBody.from_json(raw_response["data"])
+        return RefundAPIResponse(result_info=raw_response["resultInfo"], data=refund)
 
-    def refund_details(self, id=None, **kwargs):
-        if id is None:
+    def refund_details(self, merchant_refund_id: str, **kwargs) -> RefundAPIResponse:
+        if merchant_refund_id is None:
             raise ValueError("\x1b[31m MISSING REQUEST PARAMS"
                              " \x1b[0m for merchantRefundId")
-        url = "{}/{}".format('/v2/refunds', id)
-        return self.fetch(None, url, None, api_id=API_NAMES.GET_REFUND, **kwargs)
+        url = "{}/{}".format('/v2/refunds', merchant_refund_id)
+        raw_response = self.fetch(None, url, None, api_id=API_NAMES.GET_REFUND, **kwargs)
+        refund: RefundBody = RefundBody.from_json(raw_response["data"])
+        return RefundAPIResponse(result_info=raw_response["resultInfo"], data=refund)
