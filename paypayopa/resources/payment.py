@@ -20,7 +20,7 @@ class Payment(Resource):
         if "amount" not in data["amount"]:
             raise ValueError("\x1b[31m MISSING REQUEST PARAMS "
                              "\x1b[0m for amount")
-        if type(data["amount"]["amount"]) != int:
+        if not isinstance(data["amount"]["amount"], int):
             raise ValueError("\x1b[31m Amount should be of type integer"
                              " \x1b[0m")
         if "currency" not in data["amount"]:
