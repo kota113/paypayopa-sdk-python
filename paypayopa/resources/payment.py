@@ -10,8 +10,8 @@ class Payment(Resource):
         self.base_url = URL.PAYMENT
 
     def create(self, data: dict, allow_similar_transaction=False, **kwargs):
-        url = f"{self.base_url}?agreeSimilarTransaction=true"\
-            if allow_similar_transaction else self.base_url
+        url = self.base_url
+        params = {"agreeSimilarTransaction": "true"} if allow_similar_transaction else {}
         if "requestedAt" not in data:
             data['requestedAt'] = int(datetime.datetime.now().timestamp())
         if "merchantPaymentId" not in data:
@@ -26,7 +26,7 @@ class Payment(Resource):
         if "currency" not in data["amount"]:
             raise ValueError("\x1b[31m MISSING REQUEST PARAMS"
                              " \x1b[0m for currency")
-        return self.post_url(url, data, api_id=API_NAMES.CREATE_PAYMENT, **kwargs)
+        return self.post_url(url, data, api_id=API_NAMES.CREATE_PAYMENT, params=params, **kwargs)
 
     def get_payment_details(self, id, **kwargs):
         url = "{}/{}".format(self.base_url, id)
