@@ -11,7 +11,7 @@ class Payment(Resource):
 
     def create(self, data: dict, allow_similar_transaction=False, **kwargs):
         url = self.base_url
-        params = {"agreeSimilarTransaction": "true"} if allow_similar_transaction else {}
+        params = {"agreeSimilarTransaction": True} if allow_similar_transaction else {}
         if "requestedAt" not in data:
             data['requestedAt'] = int(datetime.datetime.now().timestamp())
         if "merchantPaymentId" not in data:

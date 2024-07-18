@@ -142,12 +142,6 @@ class Client:
         api_name = options['api_id']
         del options['api_id']
         url = "{}{}".format(self.base_url, path)
-        if 'params' in options:
-            print(options['params'])
-            params = options['params']
-            if params:
-                url = "{}?{}".format(url, "&".join(["{}={}".format(k, v) for k, v in params.items()]))
-            del options['params']
         response = getattr(self.session, method)(url, headers={
             'Authorization': auth_header,
             'Content-Type': 'application/json;charset=UTF-8',
