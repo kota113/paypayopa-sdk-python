@@ -4,8 +4,7 @@ class URL(object):
     PERF_BASE_URL = 'https://perf-api.paypay.ne.jp'
     RESOLVE = 'https://developer.paypay.ne.jp/develop/resolve'
     CODE = "/v2/codes"
-    # PAYMENT = "/v2/payments"
-    PAYMENT = "/v1/payments"
+    PAYMENT = "/v2/payments"
     ACCOUNT_LINK = "/v1/qr/sessions"
     PENDING_PAYMENT = "/v1/requestOrder"
     USER_AUTH = "/v2/user/authorizations"
