@@ -10,7 +10,7 @@ class Payment(Resource):
         self.base_url = URL.PAYMENT
 
     def create(self, data: dict, allow_similar_transaction=False, **kwargs):
-        url = f"{self.base_url}?allowSimilarTransaction=true"\
+        url = f"{self.base_url}?agreeSimilarTransaction=true"\
             if allow_similar_transaction else self.base_url
         if "requestedAt" not in data:
             data['requestedAt'] = int(datetime.datetime.now().timestamp())
