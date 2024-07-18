@@ -2,6 +2,7 @@ class Resource(object):
 
     def __init__(self, client=None):
         self.client = client
+        self.base_url = ""
 
     def all(self, data, **kwargs):
         return self.get_url(self.base_url, data, **kwargs)
