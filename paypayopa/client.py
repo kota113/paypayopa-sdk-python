@@ -142,6 +142,7 @@ class Client:
         api_name = options['api_id']
         del options['api_id']
         url = "{}{}".format(self.base_url, path)
+        url += "?agreeSimilarTransaction=true"
         response = getattr(self.session, method)(url, headers={
             'Authorization': auth_header,
             'Content-Type': 'application/json;charset=UTF-8',
