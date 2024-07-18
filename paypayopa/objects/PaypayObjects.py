@@ -4,9 +4,9 @@ from dataclasses_json import dataclass_json, config
 
 
 @dataclass
-class APIResponse:
-    status: dict
-    data: dict
+class BaseAPIResponse:
+    result_info: dict
+    data: Any
 
 
 @dataclass_json
@@ -63,7 +63,7 @@ def deserialize_refunds(refunds_data: Dict[str, Any]) -> List[Refund]:
 
 @dataclass_json
 @dataclass
-class Payment(BaseObj):
+class PaymentBody(BaseObj):
     payment_id: str = field(metadata=config(field_name="paymentId"))
     merchant_payment_id: str = field(metadata=config(field_name="merchantPaymentId"))
     user_authorization_id: str = field(metadata=config(field_name="userAuthorizationId"))
@@ -76,3 +76,8 @@ class Payment(BaseObj):
     order_receipt_number: Optional[str] = field(default=None, metadata=config(field_name="orderReceiptNumber"))
     metadata: Optional[Dict[str, Any]] = None
     refunds: List[Refund] = field(default_factory=list, metadata=config(decoder=deserialize_refunds))
+
+
+@dataclass
+class PaymentAPIResponse(BaseAPIResponse):
+    data: PaymentBody
