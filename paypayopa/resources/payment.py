@@ -3,9 +3,9 @@ from ..constants.url import URL
 from ..constants.api_list import API_NAMES
 import datetime
 
-from ..objects.payment import PaymentBody, PaymentAPIResponse
-from ..objects.payment_auth import RevertPaymentAuthAPIResponse, RevertPaymentAuthBody
-from ..objects.refund import RefundAPIResponse
+from paypayopa.objects.payment import PaymentBody, PaymentAPIResponse
+from paypayopa.objects.payment_auth import RevertPaymentAuthAPIResponse, RevertPaymentAuthBody
+from paypayopa.objects.refund import RefundAPIResponse
 
 
 class Payment(Resource):
