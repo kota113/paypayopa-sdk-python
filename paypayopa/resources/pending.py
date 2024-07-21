@@ -1,11 +1,11 @@
-from .base import Resource
-from ..constants.url import URL
-from ..constants.api_list import API_NAMES
 import datetime
 
 from paypayopa.objects.payment import PaymentAPIResponse, PaymentBody
 from paypayopa.objects.pending_payment import CreatedPendingPaymentBody, CreatedPendingPaymentAPIResponse
 from paypayopa.objects.refund import RefundBody, RefundAPIResponse
+from .base import Resource
+from ..constants.api_list import API_NAMES
+from ..constants.url import URL
 
 
 class Pending(Resource):
@@ -13,7 +13,7 @@ class Pending(Resource):
         super(Pending, self).__init__(client)
         self.base_url = URL.PENDING_PAYMENT
 
-    def create_pending_payment(self, data: dict, **kwargs):
+    def create_pending_payment(self, data: dict, **kwargs) -> CreatedPendingPaymentAPIResponse:
         url = self.base_url
         if "requestedAt" not in data:
             data['requestedAt'] = int(datetime.datetime.now().timestamp())
@@ -36,7 +36,7 @@ class Pending(Resource):
         pending_payment = CreatedPendingPaymentBody.from_json(raw_response["data"])
         return CreatedPendingPaymentAPIResponse(result_info=raw_response["resultInfo"], data=pending_payment)
 
-    def get_payment_details(self, merchant_payment_id: str, **kwargs):
+    def get_payment_details(self, merchant_payment_id: str, **kwargs) -> PaymentAPIResponse:
         url = "{}/{}".format(self.base_url, merchant_payment_id)
         if merchant_payment_id is None:
             raise ValueError("\x1b[31m MISSING REQUEST PARAMS"
@@ -45,7 +45,7 @@ class Pending(Resource):
         pending_payment = PaymentBody.from_json(raw_response["data"])
         return PaymentAPIResponse(result_info=raw_response["resultInfo"], data=pending_payment)
 
-    def cancel_payment(self, merchant_payment_id: str, **kwargs):
+    def cancel_payment(self, merchant_payment_id: str, **kwargs) -> PaymentAPIResponse:
         url = "{}/{}".format(self.base_url, merchant_payment_id)
         if merchant_payment_id is None:
             raise ValueError("\x1b[31m MISSING REQUEST PARAMS"
