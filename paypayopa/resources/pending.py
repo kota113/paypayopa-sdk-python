@@ -3,7 +3,9 @@ from ..constants.url import URL
 from ..constants.api_list import API_NAMES
 import datetime
 
-from ..objects.refund import RefundBody, RefundAPIResponse
+from paypayopa.objects.payment import PaymentAPIResponse, PaymentBody
+from paypayopa.objects.pending_payment import CreatedPendingPaymentBody, CreatedPendingPaymentAPIResponse
+from paypayopa.objects.refund import RefundBody, RefundAPIResponse
 
 
 class Pending(Resource):
@@ -11,7 +13,7 @@ class Pending(Resource):
         super(Pending, self).__init__(client)
         self.base_url = URL.PENDING_PAYMENT
 
-    def create_pending_payment(self, data={}, **kwargs):
+    def create_pending_payment(self, data: dict, **kwargs):
         url = self.base_url
         if "requestedAt" not in data:
             data['requestedAt'] = int(datetime.datetime.now().timestamp())
@@ -24,27 +26,32 @@ class Pending(Resource):
         if "amount" not in data["amount"]:
             raise ValueError("\x1b[31m MISSING REQUEST PARAMS "
                              "\x1b[0m for amount")
-        if type(data["amount"]["amount"]) != int:
+        if not isinstance(data["amount"]["amount"], int):
             raise ValueError("\x1b[31m Amount should be of type integer"
                              " \x1b[0m")
         if "currency" not in data["amount"]:
             raise ValueError("\x1b[31m MISSING REQUEST PARAMS"
                              " \x1b[0m for currency")
-        return self.post_url(url, data, api_id=API_NAMES.CREATE_REQUEST_ORDER, **kwargs)
+        raw_response = self.post_url(url, data, api_id=API_NAMES.CREATE_REQUEST_ORDER, **kwargs)
+        pending_payment = CreatedPendingPaymentBody.from_json(raw_response["data"])
+        return CreatedPendingPaymentAPIResponse(result_info=raw_response["resultInfo"], data=pending_payment)
 
-    def get_payment_details(self, id, **kwargs):
-        url = "{}/{}".format(self.base_url, id)
-        if id is None:
+    def get_payment_details(self, merchant_payment_id: str, **kwargs):
+        url = "{}/{}".format(self.base_url, merchant_payment_id)
+        if merchant_payment_id is None:
             raise ValueError("\x1b[31m MISSING REQUEST PARAMS"
                              " \x1b[0m for merchantPaymentId")
-        return self.fetch(None, url, None, api_id=API_NAMES.GET_REQUEST_ORDER, **kwargs)
+        raw_response = self.fetch(None, url, None, api_id=API_NAMES.GET_REQUEST_ORDER, **kwargs)
+        pending_payment = PaymentBody.from_json(raw_response["data"])
+        return PaymentAPIResponse(result_info=raw_response["resultInfo"], data=pending_payment)
 
-    def cancel_payment(self, id, **kwargs):
-        url = "{}/{}".format(self.base_url, id)
-        if id is None:
+    def cancel_payment(self, merchant_payment_id: str, **kwargs):
+        url = "{}/{}".format(self.base_url, merchant_payment_id)
+        if merchant_payment_id is None:
             raise ValueError("\x1b[31m MISSING REQUEST PARAMS"
                              " \x1b[0m for merchantPaymentId")
-        return self.delete(None, url, None, api_id=API_NAMES.CANCEL_REQUEST_ORDER, **kwargs)
+        raw_response = self.delete(None, url, None, api_id=API_NAMES.CANCEL_REQUEST_ORDER, **kwargs)
+        return PaymentAPIResponse(result_info=raw_response["resultInfo"], data=None)
 
     def refund_payment(self, data: dict, **kwargs) -> RefundAPIResponse:
         url = "{}".format(URL.REFUNDS)
