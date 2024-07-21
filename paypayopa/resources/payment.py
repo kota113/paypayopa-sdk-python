@@ -1,11 +1,12 @@
-from .base import Resource
-from ..constants.url import URL
-from ..constants.api_list import API_NAMES
 import datetime
 
 from paypayopa.objects.payment import PaymentBody, PaymentAPIResponse
-from paypayopa.objects.payment_auth import RevertPaymentAuthAPIResponse, RevertPaymentAuthBody
+from paypayopa.objects.payment_auth import RevertPaymentAuthAPIResponse, RevertPaymentAuthBody, PaymentAuthAPIResponse, \
+    PaymentAuthBody
 from paypayopa.objects.refund import RefundAPIResponse
+from .base import Resource
+from ..constants.api_list import API_NAMES
+from ..constants.url import URL
 
 
 class Payment(Resource):
@@ -56,9 +57,8 @@ class Payment(Resource):
     def refund_details(self, merchant_refund_id: str, **kwargs) -> RefundAPIResponse:
         return self.client.Pending.refund_details(merchant_refund_id, **kwargs)
 
-    # todo: implement PaymentAuthorization Object
-    # docs: https://www.paypay.ne.jp/opa/doc/v1.0/preauth_capture#tag/Payment/operation/capturePaymentAuth
-    def capture_payment(self, data=None, **kwargs):
+    # todo: based on the document. not checked yet.
+    def capture_payment(self, data=None, **kwargs) -> PaymentAuthAPIResponse:
         if data is None:
             data = {}
         url = "{}/{}".format('/v2/payments', 'capture')
@@ -82,7 +82,9 @@ class Payment(Resource):
         if "currency" not in data["amount"]:
             raise ValueError("\x1b[31m MISSING REQUEST PARAMS "
                              "\x1b[0m for currency")
-        return self.post_url(url, data, api_id=API_NAMES.CAPTURE_PAYMENT, **kwargs)
+        raw_response = self.post_url(url, data, api_id=API_NAMES.CAPTURE_PAYMENT, **kwargs)
+        payment: PaymentAuthBody = PaymentAuthBody.from_json(raw_response["data"])
+        return PaymentAuthAPIResponse(result_info=raw_response["resultInfo"], data=payment)
 
     # todo: based on the document. not checked yet.
     def create_continuous_payment(self, data: dict, **kwargs) -> PaymentAPIResponse:
