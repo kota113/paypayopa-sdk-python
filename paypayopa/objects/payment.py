@@ -1,8 +1,9 @@
 from dataclasses import dataclass, field
 from typing import List, Dict, Any, Optional
+
 from dataclasses_json import dataclass_json, config
 
-from paypayopa.objects.base import BaseObj, BaseAPIResponse, Amount
+from paypayopa.objects.base import BaseObj, BaseAPIResponse, Amount, OrderItem
 
 
 @dataclass_json
@@ -17,16 +18,6 @@ class Refund(BaseObj):
 @dataclass
 class Refunds:
     data: List[Refund]
-
-
-@dataclass_json
-@dataclass
-class OrderItem:
-    name: str
-    category: str
-    quantity: int
-    product_id: str = field(metadata=config(field_name="productId"))
-    unit_price: Amount = field(metadata=config(field_name="unitPrice"))
 
 
 @dataclass_json

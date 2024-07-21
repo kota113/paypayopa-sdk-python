@@ -24,3 +24,13 @@ class BaseObj:
 class Amount:
     amount: int
     currency: str
+
+
+@dataclass_json
+@dataclass
+class OrderItem:
+    name: str
+    category: str
+    quantity: int
+    product_id: str = field(metadata=config(field_name="productId"))
+    unit_price: Amount = field(metadata=config(field_name="unitPrice"))

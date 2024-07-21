@@ -3,17 +3,7 @@ from typing import List
 
 from dataclasses_json import dataclass_json, config
 
-from paypayopa.objects.base import BaseAPIResponse, Amount
-
-
-@dataclass_json
-@dataclass
-class OrderItem:
-    name: str
-    category: str
-    quantity: int
-    product_id: str = field(metadata=config(field_name="productId"))
-    unit_price: Amount = field(metadata=config(field_name="unitPrice"))
+from paypayopa.objects.base import BaseAPIResponse, Amount, OrderItem
 
 
 # todo: validate with the actual API response. implemented based on the API documentation
